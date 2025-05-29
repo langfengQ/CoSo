@@ -1,0 +1,22 @@
+defaults:
+  - default
+  - _self_
+
+save_path: '/home/<username>/logs/CoSo-webshop-off2on' # default: '/home/<username>/logs/ckpts/general-off2on-digirl/'
+run_name: 'autoui-webshop-eval-only' # default: 'autoui-general-eval-only'
+
+# training
+train_algorithm: "digirl" # "digirl" of "filteredbc", should be same as the evaluation checkpoint
+task_mode: "evaluate" # "train" or "evaluate" - "train" will do training when evaluating, "evaluate" will NOT do training
+parallel: "single" # "single" or "host" or "worker"
+
+# evaluation-only mode doesn't require any training
+# train_mode: "off2on" # "offline" or "online" or "off2on"
+# offline_data_path: "/home/<username>/logs/general-off2on-sft-trajectories.pt"
+# offline_actor_iterations: 30
+# offline_critic_iterations: 20
+# offline_trajectory_critic_iterations: 20
+
+# train_iterations: 400
+eval_iterations: 1000 # default: 1000
+save_freq: 3
