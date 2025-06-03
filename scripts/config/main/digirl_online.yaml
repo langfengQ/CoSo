@@ -2,7 +2,7 @@ defaults:
   - default
   - _self_
 
-save_path: '/home/<username>/logs/CoSo-webshop-online/'
+save_path: './logs/CoSo-webshop-online/'
 run_name: 'CoSo-webshop-online'
 
 # training

@@ -2,7 +2,7 @@ defaults:
   - default
   - _self_
 
-save_path: '/home/<username>/logs/CoSo-webshop-offline/'
+save_path: './logs/CoSo-webshop-offline/'
 run_name: 'CoSo-webshop-offline'
 
 # training
@@ -12,7 +12,7 @@ task_mode: "train" # "train" or "evaluate" - "train" will do training when evalu
 parallel: "single" # "single" or "host" or "worker"
 
 # offline config, uncomment offline_data_path as long as train_model is offline or off2on
-offline_data_path: "/home/<username>/logs/webshop-off2on-sft-trajectories.pt"
+offline_data_path: "/root/data/webshop-off2on-sft-trajectories.pt"
 offline_actor_iterations: 30
 offline_critic_iterations: 20
 offline_trajectory_critic_iterations: 20

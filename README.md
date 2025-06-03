@@ -23,13 +23,9 @@ Towards Efficient Online Tuning of VLM Agents via Counterfactual Soft Reinforcem
 
 
 <p align="center">
-  <a href="https://arxiv.org/abs/2505.03792">
-    <img src="https://img.shields.io/badge/arXiv-Paper-red?style=for-the-badge&logo=arxiv&logoColor=white" alt="arXiv Paper">
-  </a>
+  <a href="https://arxiv.org/abs/2505.03792"><img src="https://img.shields.io/badge/arXiv-Paper-red?style=for-the-badge&logo=arxiv&logoColor=white" alt="arXiv Paper"></a>
   &nbsp;
-  <a href="https://github.com/langfengQ/CoSo">
-    <img src="https://img.shields.io/badge/GitHub-Project-black?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Project">
-  </a>
+  <a href="https://github.com/langfengQ/CoSo"><img src="https://img.shields.io/badge/GitHub-Project-black?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Project"></a>
 </p>
 
 <p align="center">
@@ -37,36 +33,18 @@ Towards Efficient Online Tuning of VLM Agents via Counterfactual Soft Reinforcem
 </p>
 <p align="center"><em>Overview of the CoSo training workflow.</em></p>
 
----
-<!-- 
-## Features
 
-### Environment Features
+## Table of Contents
 
-- Auto-adaptive error handling support.
-- Multi-machine [emulation parallel](multimachine/README.md) support.
-- Checkpoint resuming support.
-- Trajectory video recording support.
-
-### Approach Features
-
-- Two training algorithms proposed in the paper
-  - DigiRL (automatic curriculum + doubly robust estimator filtering).
-  - Filtered Behavior Cloning (reward-based filtering).
-- Three training modes: 
-  - Offline-only training: baseline apporach - use the AutoUI checkpoint to collect data (we have this data ready for you), then train with these pre-collected sub-optimal trajectories. This mode only allows evaluation using the checkpoint.
-  - Online-only training: traditional RL approach - the AutoUI checkpoint simultaneously interacts with the environment learns online. This mode allows interactive training.
-  - Offline-to-online training: the most powerful approach as evaluated in paper - the AutoUI checkpoint first learns the pre-collected data, then simultanesouly interacts with the environment and do online learning starting from this checkpoint. This mode allows interactive training
-- Two agents:
-  - [AutoUI](https://arxiv.org/abs/2309.11436): we support both training (2 algorithms x 3 paradigms) and evaluation.
-  - [CogAgent](https://arxiv.org/abs/2312.08914): current only support evaluation, no training pipeline is supported.
-
-- Two [Android-in-the-Wild](https://arxiv.org/abs/2307.10088) task sets:
-  - AitW General: general browsing, opening apps.
-  - AitW Web Shopping: shopping on popular shopping websites.
-  - It'll also be interesting to explore the [other AitW subsets](https://github.com/google-research/google-research/tree/master/android_in_the_wild) or other task sets  if you have good candidates, please propose one in the issue.
-- DDP Multi-GPU training:
-  - We support `accelerate` for multi-GPU training. You can turn off this feature if you only have 1 GPU. It only takes **12GB** of GPU memory for AutoUI running the DigiRL algorithm, but we provide this feature in case you want to play with something larger. -->
+- [Installation](#installation)
+  - [Option 1: Using Docker (Recommended)](#option-1-using-docker-recommended)
+  - [Option 2: Using Conda (4 Steps)](#option-2-using-conda-4-steps)
+- [Configuration](#configuration)
+- [Run Examples](#run-examples)
+  - [1. Run CoSo](#1-run-coso)
+  - [2. Run Naive Entropy](#2-run-naive-entropy)
+  - [3. Run DigiRL Baseline](#3-run-digirl-baseline)
+- [Citation](#citation)
 
 
 ## Installation
@@ -76,11 +54,12 @@ Fast and isolated setup using the provided `Dockerfile`.
 ```bash
 docker build -t coso .
 
-docker run --name coso --gpus all --device /dev/kvm --group-add kvm --shm-size 2gb --security-opt apparmor=unconfined -it -v /your_own_path/CoSo:/your_own_path/CoSo coso
+docker run --name coso --gpus all --device /dev/kvm --group-add kvm --shm-size 2gb -it -v <repo_path>/CoSo:<repo_path>/CoSo coso
 ```
+Installation is complete! Skip to [Configuration](#configuration).
 
-### (Option 2) 1. Using Conda
-Create a conda environment and install all pip package requirements.
+### (Option 2) Using Conda (4 Steps)
+### 1. Create the Environment and Install Dependencies
 ```bash
 conda create -n coso python==3.10
 conda activate coso
@@ -94,7 +73,7 @@ pip install -e .
 The environment setup follows the same procedure as [DigiRL](https://github.com/DigiRL-agent/digirl). Please refer to [the environment README](./env_setup/README.md). Before moving on, you should be able to view [this screenshot](./assets/screenshot.png) by running [this script](./env_setup/screenshot.py).
 
 
-### 3. Model Checkpoints and Datasets
+### 3. Download Model Checkpoints
 Download the model:
 
 ```bash
@@ -112,7 +91,7 @@ Auto-UI-Base/
 ...
 ```
 
-#### 4. Pre-Collected Trajectories
+### 4. Pre-Collected Trajectories
 
 Download from [Google Drive](https://drive.google.com/drive/folders/1ud1XyzCfh0257CixxdgLjjpX59jYbhfU?usp=sharing):
 
@@ -123,26 +102,58 @@ Download from [Google Drive](https://drive.google.com/drive/folders/1ud1XyzCfh02
 | webshop-off2on-sft-trajectories.pt  | 528           | 20      | 115.2MB |
 | webshop-offline-sft-trajectories.pt | 1296          | 20      | 297.5MB |
 
-Store the files in a directory:
+Store the files in path `~/data/`:
 
 ```bash
 mkdir ~/data
 cp *.pt ~/data/
 ```
 
-## Run Examples
-Configuration:
+## Configuration
+
+- Edit the configuration file: [scripts/config/main/default.yaml](./scripts/config/main/default.yaml):
+
+    1. Fill in API keys and project info:
+        ```
+        huggingface_token: ''
+        wandb_key: ''
+        gemini_key: ''
+
+        entity_name: ''
+        project_name: ''
+        ```
+
+    2. Define the asset path:
+        ```
+        assets_path: '<repo_path>/CoSo/digirl/environment/android/assets/task_set'
+        ```
+
+    3. (Only if using conda) Replace /root/ with your own paths:
+        ```
+        policy_lm: '/root/Auto-UI-Base'
+        cache_dir: '/root/.cache'
+        ```
+
+- Edit the sub-configuration file
+    1. Choose the appropriate sub-configuration depending on training mode:`digirl_off2on` or `digirl_offline.yaml` or `digirl_online.yaml` or `eval_only`
+
+    2. (Only if using conda) Replace /root/ with your own paths:
+        ```
+        offline_data_path: "/root/data/webshop-off2on-sft-trajectories.pt"
+        ```
+
+<!-- Configuration:
 * Modify `scripts/config/main/default.yaml`.
 * Fill in values for all placeholders (e.g., `huggingface_token`, `wandb_token`, `gemini_token`, etc.)
 * Choose the appropriate sub-configuration depending on training mode:
   * `digirl_off2on`
   * `digirl_offline.yaml`
   * `digirl_online.yaml`
-  * `eval_only`
-* Specify **all entries** left blank or `<username>` for you in these files.
+  * `eval_only` -->
 
+## Run Examples
 ### 1. Run CoSo
-`use_entropy` and `use_causal` are set to `True` in the [default.yaml](./digirl/scripts/config/main/default.yaml).
+`use_entropy` and `use_causal` are set to `True` in the [default.yaml](./scripts/config/main/default.yaml).
 ```bash
 use_entropy: True
 use_causal: True
@@ -154,13 +165,13 @@ python run.py --config-path config/main --config-name digirl_off2on
 ```
 
 ### 2. Run Naive Entropy
-Modify [default.yaml](./digirl/scripts/config/main/default.yaml):
+Modify [default.yaml](./scripts/config/main/default.yaml):
 ```bash
 use_entropy: True
 use_causal: False
 ```
 ### 3. Run DigiRL Baseline
-Modify [default.yaml](./digirl/scripts/config/main/default.yaml):
+Modify [default.yaml](./scripts/config/main/default.yaml):
 ```bash
 use_entropy: False
 use_causal: False

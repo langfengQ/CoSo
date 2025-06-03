@@ -17,7 +17,7 @@ gemini_key: ''
 # ===================
 # ====== algo ======
 # ===================
-policy_lm: '/home/<username>/Auto-UI-Base' # default: '/home/<username>/Auto-UI-Base'
+policy_lm: '/root/Auto-UI-Base' # if using conda, change policy_lm to your own path
 critic_lm: 'roberta-base'
 capacity: 2000 # replay buffer size
 epochs: 5 # number of epochs for the critic each witeration
@@ -66,10 +66,10 @@ project_name: ''
 # ====== path ======
 # ===================
 # query by: echo $ANDROID_AVD_HOME
-android_avd_home: '/home/<username>/.android/avd'
+android_avd_home: '~/.android/avd'
 # query by: which emulator
-emulator_path: '/home/<username>/.android/emulator/emulator'
+emulator_path: '~/.android/emulator/emulator'
 # query by: which adb
-adb_path: '/home/<username>/.android/platform-tools/adb'
-cache_dir: '/home/<username>/.cache'
-assets_path: '/home/<username>/CoSo/digirl/environment/android/assets/task_set'
+adb_path: '~/.android/platform-tools/adb'
+cache_dir: '/root/.cache' # if using conda, change cache_dir to your own path
+assets_path: '<repo_path>/CoSo/digirl/environment/android/assets/task_set'

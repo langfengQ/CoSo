@@ -1,9 +1,11 @@
 # FROM nvidia/cuda:11.1.1-cudnn8-runtime-ubuntu20.04
-FROM nvidia/cuda:11.1.1-cudnn8-devel-ubuntu20.04
+FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu20.04
 
 SHELL ["/bin/bash", "-c"]
 
-ENV ANDROID_HOME=/root/.android
+ENV HOME=/root
+
+ENV ANDROID_HOME=$HOME/.android
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV SDK=$ANDROID_HOME
@@ -24,8 +26,8 @@ RUN apt-get update && apt-get install -y \
     openjdk-8-jdk \
     cpu-checker \
     fonts-dejavu \
-    build-essential \ 
-    && apt-get clean \ 
+    build-essential \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # JDK 8
@@ -56,18 +58,17 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86
 RUN conda update -y --name base conda && conda clean --all -y
 
 RUN git config --global url."https://".insteadOf git://
-RUN conda create -n digirl python==3.10 -y
-ENV PATH=/opt/conda/envs/digirl/bin:$PATH
+RUN conda create -n coso python==3.10 -y
+ENV PATH=/opt/conda/envs/coso/bin:$PATH
 COPY ./requirements.txt /opt/requirements.txt
-# RUN /opt/conda/bin/conda run -n digirl pip install -r /opt/requirements.txt --verbose
-RUN /opt/conda/envs/digirl/bin/pip install -r /opt/requirements.txt --verbose 
-# RUN /opt/conda/envs/digirl/bin/pip install torch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1 --index-url https://download.pytorch.org/whl/cu118 --verbose
-RUN /opt/conda/envs/digirl/bin/pip cache purge
+RUN /opt/conda/envs/coso/bin/pip install -r /opt/requirements.txt --verbose 
+RUN /opt/conda/envs/coso/bin/pip install torch==2.2.1 --index-url https://download.pytorch.org/whl/cu121 --verbose
+RUN /opt/conda/envs/coso/bin/pip cache purge
 
 # AVD Initialization
 RUN cd $ANDROID_HOME && mkdir avd
-RUN /opt/conda/envs/digirl/bin/pip install gdown \
-    && /opt/conda/envs/digirl/bin/gdown --folder https://drive.google.com/drive/folders/1ZGKrWiSoGqg8_NoIGT7rWmiZ8CXToaBF \
+RUN /opt/conda/envs/coso/bin/pip install gdown \
+    && /opt/conda/envs/coso/bin/gdown --folder https://drive.google.com/drive/folders/1ZGKrWiSoGqg8_NoIGT7rWmiZ8CXToaBF \
     && unzip digirl_device/test_Android.zip -d $ANDROID_HOME/avd \
     && rm -rf digirl_device/
 
@@ -79,4 +80,14 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
 RUN npm install -g appium \
     && appium driver install uiautomator2
 
-RUN /opt/conda/envs/digirl/bin/pip install Appium-Python-Client --verbose
+RUN /opt/conda/envs/coso/bin/pip install Appium-Python-Client --verbose
+
+# Download Checkpoints
+RUN wget https://huggingface.co/cooelf/Auto-UI/resolve/main/Auto-UI-Base.zip \
+    && unzip Auto-UI-Base.zip -d $HOME/Auto-UI-Base \
+    && mv Auto-UI-Base/* ./
+
+
+# Download Pre-Collected Trajectories
+RUN /opt/conda/envs/coso/bin/gdown --folder https://drive.google.com/drive/folders/1ud1XyzCfh0257CixxdgLjjpX59jYbhfU \
+    && mv digirl_data_release $HOME/data

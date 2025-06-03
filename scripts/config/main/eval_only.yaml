@@ -2,7 +2,7 @@ defaults:
   - default
   - _self_
 
-save_path: '/home/<username>/logs/CoSo-webshop-off2on' # default: '/home/<username>/logs/ckpts/general-off2on-digirl/'
+save_path: './logs/CoSo-webshop-off2on' # default: '/home/<username>/logs/ckpts/general-off2on-digirl/'
 run_name: 'autoui-webshop-eval-only' # default: 'autoui-general-eval-only'
 
 # training
