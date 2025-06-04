@@ -85,7 +85,7 @@ RUN /opt/conda/envs/coso/bin/pip install Appium-Python-Client --verbose
 # Download Checkpoints
 RUN wget https://huggingface.co/cooelf/Auto-UI/resolve/main/Auto-UI-Base.zip \
     && unzip Auto-UI-Base.zip -d $HOME/Auto-UI-Base \
-    && mv Auto-UI-Base/* ./
+    && mv $HOME/Auto-UI-Base/Auto-UI-Base/* $HOME/Auto-UI-Base/
 
 
 # Download Pre-Collected Trajectories
