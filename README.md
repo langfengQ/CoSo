@@ -9,7 +9,7 @@ Towards Efficient Online Tuning of VLM Agents via Counterfactual Soft Reinforcem
 <p align="center">
   <b>ICML 2025</b>
   <br>
-  <a href="https://scholar.google.com/citations?user=9bT7-I0AAAAJ&hl=en&authuser=1">Lang Feng</a>,
+  <a href="https://langfengq.github.io/">Lang Feng</a>,
   <a href="https://weihaotan.github.io/">Weihao Tan</a>,
   <a href="https://scholar.google.com.hk/citations?user=OJBfthMAAAAJ&hl=zh-CN">Zhiyi Lyu</a>,
   <a href="https://ltzheng.github.io/">Longtao Zheng</a>,
